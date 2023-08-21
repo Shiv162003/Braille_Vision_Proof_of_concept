@@ -32,7 +32,7 @@ if selected == "Image Segmentation":
     col = 5 #the desired number of columns
 
     # input image path
-    input_image_path = ("Picture2.png")  # Replace with your input image path
+    input_image_path = ("image2.png")  # Replace with your input image path
 
     # (rows, columns)
     grid_size = (row, col)
