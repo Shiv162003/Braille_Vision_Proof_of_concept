@@ -1,11 +1,15 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image, ImageDraw
+import cv2
+import numpy as np
+
+
 
 # Set page title
 st.set_page_config(page_title="Braille Vision", page_icon="asset/logo.png")
 
-# functions
+# functions grid
 
 def create_grid(image, grid_size):
     # Open the input image
@@ -28,8 +32,37 @@ def create_grid(image, grid_size):
     # Display image with grids
     st.image(img, caption='Image with Grids', use_column_width=True)
 selected =option_menu(menu_title="NLP",
-                              options=["xyz","Image Segmentation","Contact","about"],
+                              options=["xyz","Image Segmentation","Video Segmentation","about"],
                               orientation="horizontal",)
+# function for video
+
+def calculate_noise(frame):
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return np.std(gray_frame)
+
+def find_frame_with_least_noise(video_path):
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        print("Error: Could not open video.")
+        return None
+    
+    least_noise_frame = None
+    min_noise = float('inf')
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        noise = calculate_noise(frame)
+        if noise < min_noise:
+            min_noise = noise
+            least_noise_frame = frame
+    
+    cap.release()
+    
+    return least_noise_frame
+
 
 
 # Display content based on the selected option
@@ -56,10 +89,17 @@ if selected == "Image Segmentation":
         st.write('hello world')
         
 
-elif selected == "Contact":
+elif selected == "Video Segmentation":
     st.write("Here you can find our contact information.")
     # Add more content related to Contact
+    video_path = "video.mp4"                            
+    least_noise_frame = find_frame_with_least_noise(video_path)
 
-elif selected == "About":
+    if least_noise_frame is not None:
+        st.image(least_noise_frame)
+    else:
+        st.write("No frames in the video.")
+    
+if selected == "About":
     st.write("Learn about the Braille Vision project.")
 
