@@ -1,1 +1,0 @@
-This is going to be an open source this we all are gonna use different stuff like yolo and all but anything commited here shold first go to the testing and the naming of every python file in this folder should be done using BB_------
